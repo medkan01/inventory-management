@@ -106,6 +106,9 @@ jobs:
           tags: inventory-frontend:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-anon-key-for-ci-build
 
   # Job 4: Tests d'intégration avec Docker Compose (optionnel au début)
   integration-test:
