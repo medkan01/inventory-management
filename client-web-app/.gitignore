@@ -1,6 +1,30 @@
+# Node.js / Next.js
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
 
 # Environment variables
 .env.local
 
-# Environment variables
-.env.local
+# Testing
+/coverage
+
+# Production
+/build
+
+# Misc
+.vercel
