@@ -1,0 +1,28 @@
+services:
+  client-web-app:
+    container_name: client-web-app
+    build: 
+      context: ./client-web-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  api-services:
+    container_name: api-services
+    build: 
+      context: ./api-services
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - "8000:8000"
+
+  postgres-database:
+    container_name: postgres-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
