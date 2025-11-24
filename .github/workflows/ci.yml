@@ -127,6 +127,8 @@ jobs:
           DB_PASSWORD=postgres
           DB_NAME=inventory_db_test
           DATABASE_URL=postgresql://postgres:postgres@postgres-database:5432/inventory_db_test
+          NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-anon-key-for-ci-test
           EOF
 
       - name: Start services with Docker Compose
