@@ -60,6 +60,12 @@ jobs:
         working-directory: ./client-web-app
         run: npm ci
 
+      - name: Create .env.local for type checking
+        working-directory: ./client-web-app
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co" > .env.local
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-key" >> .env.local
+
       - name: Lint with ESLint
         working-directory: ./client-web-app
         run: npm run lint
