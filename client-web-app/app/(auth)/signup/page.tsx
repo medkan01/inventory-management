@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { 
@@ -18,7 +17,6 @@ import PasswordStrengthIndicator from '@/app/components/ui/PasswordStrengthIndic
 import { validatePassword, isPasswordValid } from '@/lib/utils/password-validation'
 
 export default function SignupPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -80,7 +78,7 @@ export default function SignupPage() {
           setConfirmPassword('')
         }
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
