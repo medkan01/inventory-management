@@ -4,6 +4,9 @@ services:
     build: 
       context: ./client-web-app
       dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
     ports:
       - "3000:3000"
 
