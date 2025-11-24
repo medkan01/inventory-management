@@ -14,6 +14,8 @@ import {
 import { Form, FormField, FormError, FormSuccess } from '@/app/components/ui/Form'
 import Input from '@/app/components/ui/Input'
 import Button from '@/app/components/ui/Button'
+import PasswordStrengthIndicator from '@/app/components/ui/PasswordStrengthIndicator'
+import { validatePassword, isPasswordValid } from '@/lib/utils/password-validation'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -23,6 +25,15 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const passwordValidation = validatePassword(password)
+  const passwordRequirements = [
+    { text: 'At least 8 characters', met: passwordValidation.minLength },
+    { text: 'Contains uppercase letter (A-Z)', met: passwordValidation.hasUppercase },
+    { text: 'Contains lowercase letter (a-z)', met: passwordValidation.hasLowercase },
+    { text: 'Contains number (0-9)', met: passwordValidation.hasNumber },
+    { text: 'Contains special character (!@#$%...)', met: passwordValidation.hasSpecialChar },
+  ]
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,8 +48,8 @@ export default function SignupPage() {
       return
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+    if (!isPasswordValid(passwordValidation)) {
+      setError('Password does not meet all requirements')
       setIsLoading(false)
       return
     }
@@ -107,7 +118,10 @@ export default function SignupPage() {
               required
               disabled={isLoading}
               autoComplete="new-password"
-              helperText="At least 6 characters"
+            />
+            <PasswordStrengthIndicator 
+              requirements={passwordRequirements}
+              show={true}
             />
           </FormField>
 
