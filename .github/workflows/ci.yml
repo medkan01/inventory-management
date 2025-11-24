@@ -60,6 +60,12 @@ jobs:
         working-directory: ./client-web-app
         run: npm ci
 
+      - name: Create .env.local for type checking
+        working-directory: ./client-web-app
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co" > .env.local
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-key" >> .env.local
+
       - name: Lint with ESLint
         working-directory: ./client-web-app
         run: npm run lint
@@ -100,6 +106,9 @@ jobs:
           tags: inventory-frontend:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-anon-key-for-ci-build
 
   # Job 4: Tests d'intégration avec Docker Compose (optionnel au début)
   integration-test:
@@ -118,6 +127,8 @@ jobs:
           DB_PASSWORD=postgres
           DB_NAME=inventory_db_test
           DATABASE_URL=postgresql://postgres:postgres@postgres-database:5432/inventory_db_test
+          NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-anon-key-for-ci-test
           EOF
 
       - name: Start services with Docker Compose
