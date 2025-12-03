@@ -37,3 +37,7 @@ alembic/versions/*.pyc
 *.db
 *.sqlite
 *.sqlite3
+
+# Logs
+logs/
+*.log
