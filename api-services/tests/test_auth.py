@@ -2,17 +2,14 @@
 Tests pour les endpoints d'authentification.
 """
 
-import pytest
 from fastapi import status
-from unittest.mock import patch
-from app.schemas.user import User
 
 
 def test_optional_auth_without_token(client):
     """Test de la route /api/v1/auth/optional sans token"""
     response = client.get("/api/v1/auth/optional")
     assert response.status_code == status.HTTP_200_OK
-    
+
     data = response.json()
     assert data["message"] == "Welcome, guest!"
     assert data["authenticated"] is False
@@ -34,7 +31,7 @@ def test_protected_route_with_valid_token(client, auth_headers, test_user):
     """Test de la route protégée avec un token JWT valide"""
     response = client.get("/api/v1/auth/protected", headers=auth_headers)
     assert response.status_code == status.HTTP_200_OK
-    
+
     data = response.json()
     assert "message" in data
     assert data["user_id"] == test_user.user_id
@@ -45,7 +42,7 @@ def test_me_route_with_valid_token(client, auth_headers, test_user):
     """Test de la route /me avec un token JWT valide"""
     response = client.get("/api/v1/auth/me", headers=auth_headers)
     assert response.status_code == status.HTTP_200_OK
-    
+
     data = response.json()
     assert data["user_id"] == test_user.user_id
     assert data["email"] == test_user.email
@@ -77,7 +74,7 @@ def test_optional_auth_with_valid_token(client, auth_headers, test_user):
     """Test de la route /api/v1/auth/optional avec un token valide"""
     response = client.get("/api/v1/auth/optional", headers=auth_headers)
     assert response.status_code == status.HTTP_200_OK
-    
+
     data = response.json()
     assert data["authenticated"] is True
     assert data["user_id"] == test_user.user_id
@@ -89,7 +86,7 @@ def test_admin_route_with_admin_token(client, admin_jwt_token, admin_user):
     headers = {"Authorization": f"Bearer {admin_jwt_token}"}
     response = client.get("/api/v1/auth/me", headers=headers)
     assert response.status_code == status.HTTP_200_OK
-    
+
     data = response.json()
     assert data["role"] == "admin"
     assert data["email"] == admin_user.email
