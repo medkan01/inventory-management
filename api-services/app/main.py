@@ -3,6 +3,7 @@ Point d'entrée principal de l'application FastAPI.
 Configure l'application, les middlewares et inclut les routes.
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -14,6 +15,24 @@ from app.api.v1.router import api_router
 setup_logging(settings.log_level)
 logger = get_logger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Gestionnaire de cycle de vie de l'application.
+    Remplace les anciens @app.on_event("startup") et @app.on_event("shutdown").
+    """
+    # Startup
+    logger.info(f"Starting {settings.project_name} v{settings.version}")
+    logger.info(f"Debug mode: {settings.debug}")
+    logger.info(f"API documentation: /docs")
+    
+    yield
+    
+    # Shutdown
+    logger.info(f"Shutting down {settings.project_name}")
+
+
 # Création de l'application FastAPI
 app = FastAPI(
     title=settings.project_name,
@@ -21,7 +40,8 @@ app = FastAPI(
     version=settings.version,
     openapi_url=f"{settings.api_v1_str}/openapi.json",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Configuration CORS
@@ -32,20 +52,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Événement exécuté au démarrage de l'application."""
-    logger.info(f"Starting {settings.project_name} v{settings.version}")
-    logger.info(f"Debug mode: {settings.debug}")
-    logger.info(f"API documentation: /docs")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Événement exécuté à l'arrêt de l'application."""
-    logger.info(f"Shutting down {settings.project_name}")
 
 
 @app.get("/")
