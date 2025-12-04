@@ -8,50 +8,60 @@ from app.schemas.product import ProductCreate, ProductUpdate
 class CRUDProduct(CRUDBase[Product, ProductCreate, ProductUpdate]):
     """CRUD operations for the Product model."""
     
-    def get_by_name(self, db: Session, *, name: str, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Retrieve products by their name with pagination."""
-        return db.query(Product).filter(Product.name == name).offset(skip).limit(limit).all()
+    def get_by_name(self, db: Session, *, name: str) -> Optional[Product]:
+        """Retrieve a product by its name."""
+        return db.query(Product).filter(Product.name == name).first()
     
-    def get_active_products(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Retrieve all active products with pagination."""
-        return db.query(Product).filter(Product.is_active == True).offset(skip).limit(limit).all()
+    def get_by_slug(self, db: Session, *, slug: str) -> Optional[Product]:
+        """Retrieve a product by its slug."""
+        return db.query(Product).filter(Product.slug == slug).first()
     
-    def get_inactive_products(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Retrieve all inactive products with pagination."""
-        return db.query(Product).filter(Product.is_active == False).offset(skip).limit(limit).all()
+    def get_by_category_id(
+        self, db: Session, *, category_id: int, skip: int = 0, limit: int = 100
+    ) -> List[Product]:
+        """Retrieve products by category ID with pagination."""
+        return (
+            db.query(Product)
+            .filter(Product.category_id == category_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     
-    def deactivate_product(self, db: Session, *, product_id: str) -> Optional[Product]:
-        """Deactivate a product by setting its is_active field to False."""
-        product = db.query(Product).filter(Product.id == product_id).first()
-        if product:
-            product.is_active = False
-            db.add(product)
-            db.commit()
-            db.refresh(product)
-        return product
+    def get_by_collection_id(
+        self, db: Session, *, collection_id: int, skip: int = 0, limit: int = 100
+    ) -> List[Product]:
+        """Retrieve products by collection ID with pagination."""
+        return (
+            db.query(Product)
+            .filter(Product.collection_id == collection_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     
-    def activate_product(self, db: Session, *, product_id: str) -> Optional[Product]:
-        """Activate a product by setting its is_active field to True."""
-        product = db.query(Product).filter(Product.id == product_id).first()
-        if product:
-            product.is_active = True
-            db.add(product)
-            db.commit()
-            db.refresh(product)
-        return product
+    def get_by_category_slug(
+        self, db: Session, *, category_slug: str, skip: int = 0, limit: int = 100
+    ) -> List[Product]:
+        """Retrieve products by category slug with pagination."""
+        return (
+            db.query(Product)
+            .join(Product.category)
+            .filter(Product.category.has(slug=category_slug))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     
-    def search_by_name(self, db: Session, *, name_substring: str, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Search for products whose names contain the given substring."""
-        return db.query(Product).filter(Product.name.ilike(f"%{name_substring}%")).offset(skip).limit(limit).all()
-    
-    def search_by_description(self, db: Session, *, description_substring: str, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Search for products whose descriptions contain the given substring."""
-        return db.query(Product).filter(Product.description.ilike(f"%{description_substring}%")).offset(skip).limit(limit).all()
-    
-    def search_by_category(self, db: Session, *, category: str, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Search for products by their category."""
-        return db.query(Product).filter(Product.category == category).offset(skip).limit(limit).all()
-    
-    def search_by_collection(self, db: Session, *, collection: str, skip: int = 0, limit: int = 100) -> List[Product]:
-        """Search for products by their collection."""
-        return db.query(Product).filter(Product.collection == collection).offset(skip).limit(limit).all()
+    def get_by_collection_slug(
+        self, db: Session, *, collection_slug: str, skip: int = 0, limit: int = 100
+    ) -> List[Product]:
+        """Retrieve products by collection slug with pagination."""
+        return (
+            db.query(Product)
+            .join(Product.collection)
+            .filter(Product.collection.has(slug=collection_slug))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
