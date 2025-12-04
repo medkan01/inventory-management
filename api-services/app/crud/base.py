@@ -26,18 +26,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
         """Retrieve multiple records with pagination."""
         return db.query(self.model).offset(skip).limit(limit).all()
-    
-    def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        """Retrieve all records with pagination."""
-        return db.query(self.model).offset(skip).limit(limit).all()
-    
-    def get_active(self, db: Session, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        """Retrieve all active records with pagination."""
-        return db.query(self.model).filter(self.model.is_active == True).offset(skip).limit(limit).all()
-    
-    def get_inactive(self, db: Session, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        """Retrieve all inactive records with pagination."""
-        return db.query(self.model).filter(self.model.is_active == False).offset(skip).limit(limit).all()
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         """Create a new record."""

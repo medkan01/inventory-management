@@ -16,4 +16,3 @@ class BaseModel(Base, TimestampMixin):
     __abstract__ = True
 
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4(), nullable=False, index=True, unique=True)
-    is_active = Column(Boolean, default=True, nullable=False, index=True)
