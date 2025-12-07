@@ -123,9 +123,7 @@ class TestProductCollectionServiceUpdate:
 
     def test_update_collection_name(self, db: Session):
         """Test de mise à jour du nom."""
-        ProductCollectionFactory.create(
-            db=db, name="Old Name", slug="old-name"
-        )
+        ProductCollectionFactory.create(db=db, name="Old Name", slug="old-name")
 
         collection_in = ProductCollectionUpdate(name="New Name")
         updated = product_collection_service.update_collection(
@@ -137,9 +135,7 @@ class TestProductCollectionServiceUpdate:
 
     def test_update_collection_slug(self, db: Session):
         """Test de mise à jour du slug."""
-        ProductCollectionFactory.create(
-            db=db, name="Collection", slug="old-slug"
-        )
+        ProductCollectionFactory.create(db=db, name="Collection", slug="old-slug")
 
         collection_in = ProductCollectionUpdate(slug="new-slug")
         updated = product_collection_service.update_collection(
@@ -184,9 +180,7 @@ class TestProductCollectionServiceUpdate:
     def test_update_collection_duplicate_name_raises_error(self, db: Session):
         """Test qu'un nom dupliqué lors de l'update lève une erreur."""
         ProductCollectionFactory.create(db=db, name="Existing Name", slug="existing")
-        ProductCollectionFactory.create(
-            db=db, name="My Name", slug="my-slug"
-        )
+        ProductCollectionFactory.create(db=db, name="My Name", slug="my-slug")
 
         collection_in = ProductCollectionUpdate(name="Existing Name")
 

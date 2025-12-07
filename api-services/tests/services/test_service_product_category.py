@@ -118,9 +118,7 @@ class TestProductCategoryServiceUpdate:
 
     def test_update_category_name(self, db: Session):
         """Test de mise à jour du nom."""
-        ProductCategoryFactory.create(
-            db=db, name="Old Name", slug="old-name"
-        )
+        ProductCategoryFactory.create(db=db, name="Old Name", slug="old-name")
 
         category_in = ProductCategoryUpdate(name="New Name")
         updated = product_category_service.update_category(db, "old-name", category_in)
@@ -130,9 +128,7 @@ class TestProductCategoryServiceUpdate:
 
     def test_update_category_slug(self, db: Session):
         """Test de mise à jour du slug."""
-        ProductCategoryFactory.create(
-            db=db, name="Category", slug="old-slug"
-        )
+        ProductCategoryFactory.create(db=db, name="Category", slug="old-slug")
 
         category_in = ProductCategoryUpdate(slug="new-slug")
         updated = product_category_service.update_category(db, "old-slug", category_in)

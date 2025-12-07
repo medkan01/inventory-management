@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 from sqlalchemy.orm import Session
 from app.crud.base import CRUDBase
 from app.models.product import Product
@@ -17,7 +18,7 @@ class CRUDProduct(CRUDBase[Product, ProductCreate, ProductUpdate]):
         return db.query(Product).filter(Product.slug == slug).first()
 
     def get_by_category_id(
-        self, db: Session, *, category_id: int, skip: int = 0, limit: int = 100
+        self, db: Session, *, category_id: UUID, skip: int = 0, limit: int = 100
     ) -> List[Product]:
         """Retrieve products by category ID with pagination."""
         return (
@@ -29,7 +30,7 @@ class CRUDProduct(CRUDBase[Product, ProductCreate, ProductUpdate]):
         )
 
     def get_by_collection_id(
-        self, db: Session, *, collection_id: int, skip: int = 0, limit: int = 100
+        self, db: Session, *, collection_id: UUID, skip: int = 0, limit: int = 100
     ) -> List[Product]:
         """Retrieve products by collection ID with pagination."""
         return (

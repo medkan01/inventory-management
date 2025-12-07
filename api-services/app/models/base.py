@@ -20,7 +20,7 @@ class TimestampMixin:
     )
 
 
-class BaseModel(Base, TimestampMixin):
+class BaseModel(Base, TimestampMixin):  # type: ignore[misc,valid-type]
     """Base model that includes an auto-generated UUID primary key and timestamps."""
 
     __abstract__ = True
