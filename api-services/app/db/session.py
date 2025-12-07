@@ -21,14 +21,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def get_db():
     """
     Dependency pour obtenir une session de base de données.
-    
+
     Utilisation dans une route:
     ```python
     @router.get("/items")
     def get_items(db: Session = Depends(get_db)):
         return crud.item.get_multi(db)
     ```
-    
+
     Yields:
         Session: Une session SQLAlchemy qui sera automatiquement fermée après usage
     """

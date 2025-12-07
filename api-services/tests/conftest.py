@@ -15,14 +15,14 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 os.environ.setdefault("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co")
 os.environ.setdefault("SUPABASE_JWT_SECRET", "test-jwt-secret-for-testing")
 
-from app.main import app
-from app.core.config import settings
-from app.schemas.user import User
-from app.db import get_db
-from app.api.deps import get_current_user
+from app.main import app  # noqa: E402
+from app.core.config import settings  # noqa: E402
+from app.schemas.user import User  # noqa: E402
+from app.db import get_db  # noqa: E402
+from app.api.deps import get_current_user  # noqa: E402
 
 # Import du module de base de données de test
-from tests.fixtures.database import (
+from tests.fixtures.database import (  # noqa: E402
     create_test_database,
     drop_test_database,
     get_test_db,
@@ -30,7 +30,7 @@ from tests.fixtures.database import (
 )
 
 # Import des factories
-from tests.fixtures.factories import (
+from tests.fixtures.factories import (  # noqa: E402
     ProductCategoryFactory,
     ProductCollectionFactory,
     ProductFactory,
@@ -60,24 +60,24 @@ def db() -> Session:
     """
     Fixture pour obtenir une session de base de données de test.
     Réinitialise la base de données avant chaque test pour garantir l'isolation.
-    
+
     Usage:
         def test_create_product(db):
             product = Product(name="Test Product")
             db.add(product)
             db.commit()
             assert product.id is not None
-    
+
     Returns:
         Session: Session de base de données de test propre et isolée
     """
     # Réinitialiser la DB avant chaque test
     reset_test_database()
-    
+
     # Créer une nouvelle session
     db_session = next(get_test_db())
     yield db_session
-    
+
     # Nettoyer après le test
     db_session.close()
 
@@ -93,30 +93,31 @@ def client(db: Session, test_user):
         def test_something(client):
             response = client.get("/api/v1/products")
             assert response.status_code == 200
-    
+
     Args:
         db: Session de base de données de test (injection automatique)
         test_user: Utilisateur de test pour l'authentification mockée
-    
+
     Returns:
         TestClient: Client de test configuré avec la DB de test et auth mockée
     """
+
     # Remplacer la dépendance get_db par get_test_db
     def override_get_db():
         try:
             yield db
         finally:
             pass
-    
+
     # Mock de get_current_user pour contourner l'authentification JWT
     async def override_get_current_user():
         return test_user
-    
+
     app.dependency_overrides[get_db] = override_get_db
     app.dependency_overrides[get_current_user] = override_get_current_user
-    
+
     yield TestClient(app)
-    
+
     # Nettoyer les overrides après le test
     app.dependency_overrides.clear()
 
@@ -131,24 +132,25 @@ def client_no_auth(db: Session):
         def test_auth(client_no_auth):
             response = client_no_auth.get("/api/v1/auth/protected")
             assert response.status_code == 403  # Sans token
-    
+
     Args:
         db: Session de base de données de test (injection automatique)
-    
+
     Returns:
         TestClient: Client de test configuré avec la DB de test mais SANS auth mockée
     """
+
     # Remplacer uniquement la dépendance get_db, PAS get_current_user
     def override_get_db():
         try:
             yield db
         finally:
             pass
-    
+
     app.dependency_overrides[get_db] = override_get_db
-    
+
     yield TestClient(app)
-    
+
     # Nettoyer les overrides après le test
     app.dependency_overrides.clear()
 
@@ -297,12 +299,12 @@ def auth_headers(valid_jwt_token):
 def test_category(db: Session):
     """
     Fixture pour créer une catégorie de test.
-    
+
     Usage:
         def test_something(test_category):
             assert test_category.name is not None
             assert test_category.slug is not None
-    
+
     Returns:
         ProductCategory: Catégorie de test avec des valeurs par défaut
     """
@@ -318,12 +320,12 @@ def test_category(db: Session):
 def test_collection(db: Session):
     """
     Fixture pour créer une collection de test.
-    
+
     Usage:
         def test_something(test_collection):
             assert test_collection.name is not None
             assert test_collection.slug is not None
-    
+
     Returns:
         ProductCollection: Collection de test avec des valeurs par défaut
     """
@@ -339,16 +341,16 @@ def test_collection(db: Session):
 def test_product(db: Session, test_category):
     """
     Fixture pour créer un produit de test.
-    
+
     Usage:
         def test_something(test_product):
             assert test_product.name is not None
             assert test_product.category_id is not None
-    
+
     Args:
         db: Session de base de données
         test_category: Catégorie de test (injection automatique)
-    
+
     Returns:
         Product: Produit de test avec des valeurs par défaut
     """
@@ -364,11 +366,11 @@ def test_product(db: Session, test_category):
 def multiple_categories(db: Session):
     """
     Fixture pour créer plusieurs catégories de test.
-    
+
     Usage:
         def test_something(multiple_categories):
             assert len(multiple_categories) == 3
-    
+
     Returns:
         list[ProductCategory]: Liste de 3 catégories de test
     """
@@ -379,11 +381,11 @@ def multiple_categories(db: Session):
 def multiple_collections(db: Session):
     """
     Fixture pour créer plusieurs collections de test.
-    
+
     Usage:
         def test_something(multiple_collections):
             assert len(multiple_collections) == 3
-    
+
     Returns:
         list[ProductCollection]: Liste de 3 collections de test
     """
@@ -394,16 +396,17 @@ def multiple_collections(db: Session):
 def multiple_products(db: Session, test_category):
     """
     Fixture pour créer plusieurs produits de test dans la même catégorie.
-    
+
     Usage:
         def test_something(multiple_products):
             assert len(multiple_products) == 5
-            assert all(p.category_id == multiple_products[0].category_id for p in multiple_products)
-    
+            category_id = multiple_products[0].category_id
+            assert all(p.category_id == category_id for p in multiple_products)
+
     Args:
         db: Session de base de données
         test_category: Catégorie de test commune
-    
+
     Returns:
         list[Product]: Liste de 5 produits de test
     """

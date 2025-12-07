@@ -56,7 +56,9 @@ def test_protected_route_with_expired_token(client_no_auth, expired_jwt_token):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_protected_route_with_invalid_signature(client_no_auth, invalid_signature_token):
+def test_protected_route_with_invalid_signature(
+    client_no_auth, invalid_signature_token
+):
     """Test de la route protégée avec une signature invalide - doit retourner 401"""
     headers = {"Authorization": f"Bearer {invalid_signature_token}"}
     response = client_no_auth.get("/api/v1/auth/protected", headers=headers)

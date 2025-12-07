@@ -60,7 +60,7 @@ def get_test_db() -> Generator[Session, None, None]:
     """
     Génère une session de base de données de test.
     Utilisée pour remplacer la dépendance get_db dans les tests.
-    
+
     Yields:
         Session: Session de base de données de test
     """

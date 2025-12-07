@@ -19,12 +19,12 @@ class ProductCategoryService:
     ) -> List[ProductCategory]:
         """
         Récupère toutes les catégories avec pagination.
-        
+
         Args:
             db: Session de base de données
             skip: Nombre d'éléments à sauter
             limit: Nombre maximum d'éléments à retourner
-            
+
         Returns:
             Liste des catégories
         """
@@ -33,11 +33,11 @@ class ProductCategoryService:
     def get_category_by_slug(self, db: Session, slug: str) -> Optional[ProductCategory]:
         """
         Récupère une catégorie par son slug.
-        
+
         Args:
             db: Session de base de données
             slug: Slug de la catégorie
-            
+
         Returns:
             Catégorie si trouvée, None sinon
         """
@@ -48,23 +48,23 @@ class ProductCategoryService:
     ) -> ProductCategory:
         """
         Crée une nouvelle catégorie avec validations métier.
-        
+
         Args:
             db: Session de base de données
             category_in: Données de la catégorie à créer
-            
+
         Returns:
             Catégorie créée
-            
+
         Raises:
             ValueError: Si le slug ou le nom existe déjà
         """
         # Validation : slug unique
         self._validate_slug_uniqueness(db, category_in.slug)
-        
+
         # Validation : nom unique
         self._validate_name_uniqueness(db, category_in.name)
-        
+
         # Création de la catégorie
         return crud_category.create(db=db, obj_in=category_in)
 
@@ -76,15 +76,15 @@ class ProductCategoryService:
     ) -> ProductCategory:
         """
         Met à jour une catégorie existante avec validations métier.
-        
+
         Args:
             db: Session de base de données
             slug: Slug de la catégorie à mettre à jour
             category_in: Nouvelles données de la catégorie
-            
+
         Returns:
             Catégorie mise à jour
-            
+
         Raises:
             ValueError: Si la catégorie n'existe pas ou si les validations échouent
         """
@@ -92,43 +92,43 @@ class ProductCategoryService:
         category = self.get_category_by_slug(db, slug)
         if not category:
             raise ValueError(f"Category with slug '{slug}' not found")
-        
+
         # Si le slug est modifié, vérifier qu'il n'existe pas déjà
         if category_in.slug and category_in.slug != slug:
             self._validate_slug_uniqueness(db, category_in.slug)
-        
+
         # Si le nom est modifié, vérifier qu'il n'existe pas déjà
         if category_in.name and category_in.name != category.name:
             self._validate_name_uniqueness(db, category_in.name)
-        
+
         # Mise à jour de la catégorie
         return crud_category.update(db=db, db_obj=category, obj_in=category_in)
 
     def delete_category(self, db: Session, slug: str) -> None:
         """
         Supprime une catégorie existante.
-        
+
         Args:
             db: Session de base de données
             slug: Slug de la catégorie à supprimer
-            
+
         Raises:
             ValueError: Si la catégorie n'existe pas
         """
         category = self.get_category_by_slug(db, slug)
         if not category:
             raise ValueError(f"Category with slug '{slug}' not found")
-        
+
         crud_category.delete(db=db, id=category.id)
 
     def _validate_slug_uniqueness(self, db: Session, slug: str) -> None:
         """
         Valide que le slug n'existe pas déjà.
-        
+
         Args:
             db: Session de base de données
             slug: Slug à valider
-            
+
         Raises:
             ValueError: Si le slug existe déjà
         """
@@ -139,11 +139,11 @@ class ProductCategoryService:
     def _validate_name_uniqueness(self, db: Session, name: str) -> None:
         """
         Valide que le nom n'existe pas déjà.
-        
+
         Args:
             db: Session de base de données
             name: Nom à valider
-            
+
         Raises:
             ValueError: Si le nom existe déjà
         """

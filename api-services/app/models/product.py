@@ -1,5 +1,5 @@
 from app.models.base import BaseModel
-from sqlalchemy import Column, String, Text, Boolean, ForeignKey, UUID
+from sqlalchemy import Column, String, Text, ForeignKey, UUID
 from sqlalchemy.orm import relationship
 
 
@@ -48,8 +48,18 @@ class Product(BaseModel):
     description = Column(Text, nullable=True)
 
     # Foreign keys
-    category_id = Column(UUID(as_uuid=True), ForeignKey("product_categories.id"), nullable=False, index=True)
-    collection_id = Column(UUID(as_uuid=True), ForeignKey("product_collections.id"), nullable=True, index=True)
+    category_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("product_categories.id"),
+        nullable=False,
+        index=True,
+    )
+    collection_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("product_collections.id"),
+        nullable=True,
+        index=True,
+    )
 
     # Relationships
     category = relationship("ProductCategory", back_populates="products")

@@ -12,4 +12,10 @@ product = CRUDProduct(Product)
 product_category = CRUDProductCategory(ProductCategory)
 product_collection = CRUDProductCollection(ProductCollection)
 
-__all__ = ["CRUDBase", "CRUDProduct", "product", "product_category", "product_collection"]
+__all__ = [
+    "CRUDBase",
+    "CRUDProduct",
+    "product",
+    "product_category",
+    "product_collection",
+]

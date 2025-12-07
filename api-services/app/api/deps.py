@@ -3,15 +3,13 @@ Dépendances communes pour les routes API.
 Contient les dependencies d'authentification, de base de données, etc.
 """
 
-from typing import Optional, Generator
+from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
 
 from app.core import settings, get_logger
 from app.schemas import User
-from app.db import get_db
 
 logger = get_logger(__name__)
 

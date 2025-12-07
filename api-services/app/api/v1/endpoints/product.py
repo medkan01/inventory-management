@@ -25,24 +25,26 @@ def get_products(
 ):
     """
     Récupère la liste de tous les produits.
-    
+
     Paramètres:
     - **skip**: Nombre d'éléments à sauter pour la pagination (défaut: 0)
-    - **limit**: Nombre maximum d'éléments à retourner (défaut: DEFAULT_PRODUCT_LIMIT, max: MAX_PRODUCT_LIMIT)
-    
+    - **limit**: Nombre max d'éléments (défaut: DEFAULT_PRODUCT_LIMIT,
+      max: MAX_PRODUCT_LIMIT)
+
     Retourne:
     - Liste des produits avec leurs informations complètes
-    
+
     Nécessite une authentification.
     """
     if limit > MAX_PRODUCT_LIMIT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items."
+            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items.",
         )
-    
+
     products = product_service.get_all_products(db=db, skip=skip, limit=limit)
     return products
+
 
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product_by_id(
@@ -52,23 +54,22 @@ def get_product_by_id(
 ):
     """
     Récupère les informations d'un produit par son ID.
-    
+
     Paramètres:
     - **product_id**: L'ID unique du produit à récupérer.
-    
+
     Retourne:
     - Les informations complètes du produit.
-    
+
     Nécessite une authentification.
     """
     product = product_service.get_product_by_id(db=db, product_id=product_id)
-    
+
     if not product:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Product not found."
         )
-    
+
     return product
 
 
@@ -80,23 +81,23 @@ def get_product_by_slug(
 ):
     """
     Récupère les informations d'un produit par son slug.
-    
+
     Paramètres:
     - **slug**: Le slug unique du produit à récupérer.
-    
+
     Retourne:
     - Les informations complètes du produit.
-    
+
     Nécessite une authentification.
     """
     product = product_service.get_product_by_slug(db=db, slug=slug)
-    
+
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Product with slug '{slug}' not found."
+            detail=f"Product with slug '{slug}' not found.",
         )
-    
+
     return product
 
 
@@ -110,27 +111,29 @@ def get_products_by_category_id(
 ):
     """
     Récupère les produits par ID de catégorie.
-    
+
     Paramètres:
     - **category_id**: L'ID de la catégorie.
     - **skip**: Nombre d'éléments à sauter pour la pagination (défaut: 0)
-    - **limit**: Nombre maximum d'éléments à retourner (défaut: DEFAULT_PRODUCT_LIMIT, max: MAX_PRODUCT_LIMIT)
-    
+    - **limit**: Nombre max d'éléments (défaut: DEFAULT_PRODUCT_LIMIT,
+      max: MAX_PRODUCT_LIMIT)
+
     Retourne:
     - Liste des produits appartenant à la catégorie spécifiée.
-    
+
     Nécessite une authentification.
     """
     if limit > MAX_PRODUCT_LIMIT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items."
+            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items.",
         )
-    
+
     products = product_service.get_products_by_category_id(
         db=db, category_id=category_id, skip=skip, limit=limit
     )
     return products
+
 
 @router.get("/collection/{collection_id}", response_model=List[ProductResponse])
 def get_products_by_collection_id(
@@ -142,27 +145,29 @@ def get_products_by_collection_id(
 ):
     """
     Récupère les produits par ID de collection.
-    
+
     Paramètres:
     - **collection_id**: L'ID de la collection.
     - **skip**: Nombre d'éléments à sauter pour la pagination (défaut: 0)
-    - **limit**: Nombre maximum d'éléments à retourner (défaut: DEFAULT_PRODUCT_LIMIT, max: MAX_PRODUCT_LIMIT)
-    
+    - **limit**: Nombre max d'éléments (défaut: DEFAULT_PRODUCT_LIMIT,
+      max: MAX_PRODUCT_LIMIT)
+
     Retourne:
     - Liste des produits appartenant à la collection spécifiée.
-    
+
     Nécessite une authentification.
     """
     if limit > MAX_PRODUCT_LIMIT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items."
+            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items.",
         )
-    
+
     products = product_service.get_products_by_collection_id(
         db=db, collection_id=collection_id, skip=skip, limit=limit
     )
     return products
+
 
 @router.get("/category/slug/{category_slug}", response_model=List[ProductResponse])
 def get_products_by_category_slug(
@@ -174,27 +179,29 @@ def get_products_by_category_slug(
 ):
     """
     Récupère les produits par slug de catégorie.
-    
+
     Paramètres:
     - **category_slug**: Le slug de la catégorie.
     - **skip**: Nombre d'éléments à sauter pour la pagination (défaut: 0)
-    - **limit**: Nombre maximum d'éléments à retourner (défaut: DEFAULT_PRODUCT_LIMIT, max: MAX_PRODUCT_LIMIT)
-    
+    - **limit**: Nombre max d'éléments (défaut: DEFAULT_PRODUCT_LIMIT,
+      max: MAX_PRODUCT_LIMIT)
+
     Retourne:
     - Liste des produits appartenant à la catégorie spécifiée.
-    
+
     Nécessite une authentification.
     """
     if limit > MAX_PRODUCT_LIMIT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items."
+            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items.",
         )
-    
+
     products = product_service.get_products_by_category_slug(
         db=db, category_slug=category_slug, skip=skip, limit=limit
     )
     return products
+
 
 @router.get("/collection/slug/{collection_slug}", response_model=List[ProductResponse])
 def get_products_by_collection_slug(
@@ -206,27 +213,29 @@ def get_products_by_collection_slug(
 ):
     """
     Récupère les produits par slug de collection.
-    
+
     Paramètres:
     - **collection_slug**: Le slug de la collection.
     - **skip**: Nombre d'éléments à sauter pour la pagination (défaut: 0)
-    - **limit**: Nombre maximum d'éléments à retourner (défaut: DEFAULT_PRODUCT_LIMIT, max: MAX_PRODUCT_LIMIT)
-    
+    - **limit**: Nombre max d'éléments (défaut: DEFAULT_PRODUCT_LIMIT,
+      max: MAX_PRODUCT_LIMIT)
+
     Retourne:
     - Liste des produits appartenant à la collection spécifiée.
-    
+
     Nécessite une authentification.
     """
     if limit > MAX_PRODUCT_LIMIT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items."
+            detail=f"Limit cannot exceed {MAX_PRODUCT_LIMIT} items.",
         )
-    
+
     products = product_service.get_products_by_collection_slug(
         db=db, collection_slug=collection_slug, skip=skip, limit=limit
     )
     return products
+
 
 @router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(
@@ -236,23 +245,21 @@ def create_product(
 ):
     """
     Crée un nouveau produit.
-    
+
     Paramètres:
     - **product_in**: Données du produit à créer.
-    
+
     Retourne:
     - Les informations complètes du produit créé.
-    
+
     Nécessite une authentification.
     """
     try:
         product = product_service.create_product(db=db, product_in=product_in)
         return product
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
 
 @router.put("/{product_id}", response_model=ProductResponse)
 def update_product(
@@ -263,30 +270,27 @@ def update_product(
 ):
     """
     Met à jour un produit existant.
-    
+
     Paramètres:
     - **product_id**: L'ID du produit à mettre à jour.
     - **product_in**: Données du produit à mettre à jour.
-    
+
     Retourne:
     - Les informations complètes du produit mis à jour.
-    
+
     Nécessite une authentification.
     """
     try:
-        product = product_service.update_product(db=db, product_id=product_id, product_in=product_in)
+        product = product_service.update_product(
+            db=db, product_id=product_id, product_in=product_in
+        )
         return product
     except ValueError as e:
         # Convertir ValueError en HTTPException appropriée
         if "not found" in str(e).lower():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=str(e)
-            )
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(
@@ -296,21 +300,17 @@ def delete_product(
 ):
     """
     Supprime un produit existant.
-    
+
     Paramètres:
     - **product_id**: L'ID du produit à supprimer.
-    
+
     Retourne:
     - Aucun contenu (204 No Content)
-    
+
     Nécessite une authentification.
     """
     try:
         product_service.delete_product(db=db, product_id=product_id)
         return None
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
