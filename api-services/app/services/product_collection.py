@@ -64,8 +64,8 @@ class ProductCollectionService:
         # Validation : slug unique
         self._validate_slug_uniqueness(db, collection_in.slug)
         
-        # Validation : titre unique
-        self._validate_title_uniqueness(db, collection_in.title)
+        # Validation : nom unique
+        self._validate_name_uniqueness(db, collection_in.name)
         
         # Création de la collection
         return crud_collection.create(db=db, obj_in=collection_in)
@@ -99,9 +99,9 @@ class ProductCollectionService:
         if collection_in.slug and collection_in.slug != slug:
             self._validate_slug_uniqueness(db, collection_in.slug)
         
-        # Si le titre est modifié, vérifier qu'il n'existe pas déjà
-        if collection_in.title and collection_in.title != collection.name:
-            self._validate_title_uniqueness(db, collection_in.title)
+        # Si le nom est modifié, vérifier qu'il n'existe pas déjà
+        if collection_in.name and collection_in.name != collection.name:
+            self._validate_name_uniqueness(db, collection_in.name)
         
         # Mise à jour de la collection
         return crud_collection.update(db=db, db_obj=collection, obj_in=collection_in)
@@ -138,20 +138,20 @@ class ProductCollectionService:
         if existing_collection:
             raise ValueError(f"Collection with slug '{slug}' already exists")
 
-    def _validate_title_uniqueness(self, db: Session, title: str) -> None:
+    def _validate_name_uniqueness(self, db: Session, name: str) -> None:
         """
-        Valide que le titre n'existe pas déjà.
+        Valide que le nom n'existe pas déjà.
         
         Args:
             db: Session de base de données
-            title: Titre à valider
+            name: Nom à valider
             
         Raises:
-            ValueError: Si le titre existe déjà
+            ValueError: Si le nom existe déjà
         """
-        existing_collection = crud_collection.get_by_name(db=db, name=title)
+        existing_collection = crud_collection.get_by_name(db=db, name=name)
         if existing_collection:
-            raise ValueError(f"Collection with title '{title}' already exists")
+            raise ValueError(f"Collection with name '{name}' already exists")
 
 
 # Instance globale du service

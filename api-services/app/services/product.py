@@ -4,6 +4,7 @@ Contient la logique métier et les validations.
 """
 
 from typing import List, Optional
+from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.crud import product as crud_product, product_category as crud_category, product_collection as crud_collection
@@ -30,7 +31,7 @@ class ProductService:
         """
         return crud_product.get_multi(db=db, skip=skip, limit=limit)
 
-    def get_product_by_id(self, db: Session, product_id: int) -> Optional[Product]:
+    def get_product_by_id(self, db: Session, product_id: UUID) -> Optional[Product]:
         """
         Récupère un produit par son ID.
         
@@ -57,7 +58,7 @@ class ProductService:
         return crud_product.get_by_slug(db=db, slug=slug)
 
     def get_products_by_category_id(
-        self, db: Session, category_id: int, *, skip: int = 0, limit: int = 100
+        self, db: Session, category_id: UUID, *, skip: int = 0, limit: int = 100
     ) -> List[Product]:
         """
         Récupère les produits par ID de catégorie.
@@ -95,7 +96,7 @@ class ProductService:
         )
 
     def get_products_by_collection_id(
-        self, db: Session, collection_id: int, *, skip: int = 0, limit: int = 100
+        self, db: Session, collection_id: UUID, *, skip: int = 0, limit: int = 100
     ) -> List[Product]:
         """
         Récupère les produits par ID de collection.
@@ -146,6 +147,11 @@ class ProductService:
         Raises:
             ValueError: Si les validations échouent
         """
+        # Validation : slug unique
+        existing_product = crud_product.get_by_slug(db=db, slug=product_in.slug)
+        if existing_product:
+            raise ValueError(f"Product with slug '{product_in.slug}' already exists")
+        
         # Validation : catégorie existe
         self._validate_category_exists(db, product_in.category_id)
         
@@ -157,7 +163,7 @@ class ProductService:
         return crud_product.create(db=db, obj_in=product_in)
 
     def update_product(
-        self, db: Session, product_id: int, product_in: ProductUpdate
+        self, db: Session, product_id: UUID, product_in: ProductUpdate
     ) -> Product:
         """
         Met à jour un produit existant avec validations métier.
@@ -178,6 +184,12 @@ class ProductService:
         if not product:
             raise ValueError(f"Product with ID {product_id} not found")
         
+        # Validation : slug unique (si fourni et différent de l'actuel)
+        if product_in.slug and product_in.slug != product.slug:
+            existing_product = crud_product.get_by_slug(db=db, slug=product_in.slug)
+            if existing_product:
+                raise ValueError(f"Product with slug '{product_in.slug}' already exists")
+        
         # Validation : catégorie existe (si fournie)
         if product_in.category_id:
             self._validate_category_exists(db, product_in.category_id)
@@ -189,7 +201,7 @@ class ProductService:
         # Mise à jour du produit
         return crud_product.update(db=db, db_obj=product, obj_in=product_in)
 
-    def delete_product(self, db: Session, product_id: int) -> None:
+    def delete_product(self, db: Session, product_id: UUID) -> None:
         """
         Supprime un produit existant.
         
@@ -206,7 +218,7 @@ class ProductService:
         
         crud_product.delete(db=db, id=product_id)
 
-    def _validate_category_exists(self, db: Session, category_id: str) -> None:
+    def _validate_category_exists(self, db: Session, category_id: UUID) -> None:
         """
         Valide que la catégorie existe.
         
@@ -221,7 +233,7 @@ class ProductService:
         if not category:
             raise ValueError(f"Category with ID '{category_id}' does not exist")
 
-    def _validate_collection_exists(self, db: Session, collection_id: str) -> None:
+    def _validate_collection_exists(self, db: Session, collection_id: UUID) -> None:
         """
         Valide que la collection existe.
         
