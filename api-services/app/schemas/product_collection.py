@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 class ProductCollectionBase(BaseModel):
     """Base schema for product collection."""
-    title: str = Field(..., min_length=1, max_length=150, description="The title of the product collection.")
-    slug: str = Field(..., min_length=1, max_length=150, description="The slug for the product collection.")
+    name: str = Field(..., min_length=1, max_length=100, description="The name of the product collection.")
+    slug: str = Field(..., min_length=1, max_length=100, description="The slug for the product collection.")
     description: Optional[str] = Field(None, description="A brief description of the product collection.")
 
 
@@ -16,14 +17,14 @@ class ProductCollectionCreate(ProductCollectionBase):
 
 class ProductCollectionUpdate(BaseModel):
     """Schema for updating a product collection."""
-    title: Optional[str] = Field(None, min_length=1, max_length=150, description="The title of the product collection.")
-    slug: Optional[str] = Field(None, min_length=1, max_length=150, description="The slug for the product collection.")
+    name: Optional[str] = Field(None, min_length=1, max_length=100, description="The name of the product collection.")
+    slug: Optional[str] = Field(None, min_length=1, max_length=100, description="The slug for the product collection.")
     description: Optional[str] = Field(None, description="A brief description of the product collection.")
 
 
 class ProductCollectionResponse(ProductCollectionBase):
     """Response schema for a product collection, including metadata."""
-    id: str = Field(..., description="The unique identifier of the product collection.")
+    id: UUID = Field(..., description="The unique identifier of the product collection.")
     created_at: datetime = Field(..., description="The timestamp when the product collection was created.")
     updated_at: datetime = Field(..., description="The timestamp when the product collection was last updated.")
 

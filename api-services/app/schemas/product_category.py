@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class ProductCategoryBase(BaseModel):
@@ -24,7 +25,7 @@ class ProductCategoryUpdate(BaseModel):
 
 class ProductCategoryResponse(ProductCategoryBase):
     """Response schema for a product category, including metadata."""
-    id: str = Field(..., description="The unique identifier of the product category.")
+    id: UUID = Field(..., description="The unique identifier of the product category.")
     created_at: datetime = Field(..., description="The timestamp when the product category was created.")
     updated_at: datetime = Field(..., description="The timestamp when the product category was last updated.")
 
