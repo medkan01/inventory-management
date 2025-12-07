@@ -29,7 +29,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         """Create a new record."""
-        obj_in_data = jsonable_encoder(obj_in)
+        obj_in_data = obj_in.model_dump()
         db_obj = self.model(**obj_in_data)  # type: ignore
 
         db.add(db_obj)
@@ -46,16 +46,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: UpdateSchemaType | Dict[str, Any]
     ) -> ModelType:
         """Update an existing record."""
-        obj_data = jsonable_encoder(db_obj)
-
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.model_dump(exclude_unset=True)
         
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
+        for field in update_data:
+            setattr(db_obj, field, update_data[field])
         
         db.add(db_obj)
         db.commit()
@@ -65,7 +62,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     
     def delete(self, db: Session, *, id: Any) -> Optional[ModelType]:
         """Delete a record by its ID."""
-        obj = db.query(self.model).get(id)
+        obj = db.query(self.model).filter(self.model.id == id).first()
 
         if obj:
             db.delete(obj)
