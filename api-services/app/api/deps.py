@@ -8,9 +8,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 
-from app.core.config import settings
-from app.core.logging import get_logger
-from app.schemas.user import User
+from app.core import settings, get_logger
+from app.schemas import User
 
 logger = get_logger(__name__)
 

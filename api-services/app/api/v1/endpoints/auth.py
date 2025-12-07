@@ -7,7 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 
 from app.api.deps import get_current_user, get_current_user_optional
-from app.schemas.user import User, UserResponse
+from app.schemas import User, UserResponse
 
 router = APIRouter()
 
