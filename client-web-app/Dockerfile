@@ -14,9 +14,9 @@ COPY . .
 ARG SUPABASE_URL
 ARG SUPABASE_ANON_KEY
 
-# Set environment variables for build
-ENV SUPABASE_URL=$SUPABASE_URL
-ENV SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+# Set environment variables for build (Next.js requires NEXT_PUBLIC_ prefix)
+ENV NEXT_PUBLIC_SUPABASE_URL=$SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
 
 # Build the application
 RUN npm run build
