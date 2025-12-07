@@ -3,6 +3,7 @@ Endpoints pour la gestion des produits.
 """
 
 from typing import List
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -45,7 +46,7 @@ def get_products(
 
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product_by_id(
-    product_id: int,
+    product_id: UUID,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
@@ -70,9 +71,10 @@ def get_product_by_id(
     
     return product
 
-@router.get("/{product_slug}", response_model=ProductResponse)
+
+@router.get("/slug/{slug}", response_model=ProductResponse)
 def get_product_by_slug(
-    product_slug: str,
+    slug: str,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
@@ -80,26 +82,27 @@ def get_product_by_slug(
     Récupère les informations d'un produit par son slug.
     
     Paramètres:
-    - **product_slug**: Le slug unique du produit à récupérer.
+    - **slug**: Le slug unique du produit à récupérer.
     
     Retourne:
     - Les informations complètes du produit.
     
     Nécessite une authentification.
     """
-    product = product_service.get_product_by_slug(db=db, slug=product_slug)
-
+    product = product_service.get_product_by_slug(db=db, slug=slug)
+    
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found."
+            detail=f"Product with slug '{slug}' not found."
         )
     
     return product
 
+
 @router.get("/category/{category_id}", response_model=List[ProductResponse])
 def get_products_by_category_id(
-    category_id: int,
+    category_id: UUID,
     skip: int = 0,
     limit: int = DEFAULT_PRODUCT_LIMIT,
     db: Session = Depends(get_db),
@@ -131,7 +134,7 @@ def get_products_by_category_id(
 
 @router.get("/collection/{collection_id}", response_model=List[ProductResponse])
 def get_products_by_collection_id(
-    collection_id: int,
+    collection_id: UUID,
     skip: int = 0,
     limit: int = DEFAULT_PRODUCT_LIMIT,
     db: Session = Depends(get_db),
@@ -253,7 +256,7 @@ def create_product(
 
 @router.put("/{product_id}", response_model=ProductResponse)
 def update_product(
-    product_id: int,
+    product_id: UUID,
     product_in: ProductUpdate,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
@@ -287,7 +290,7 @@ def update_product(
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(
-    product_id: int,
+    product_id: UUID,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
